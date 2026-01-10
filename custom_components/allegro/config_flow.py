@@ -93,7 +93,7 @@ class AllegroOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """Initialize HACS options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
         self.options = dict(config_entry.options)
 
     async def async_step_init(self, user_input=None):  # pylint: disable=unused-argument
@@ -111,7 +111,7 @@ class AllegroOptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        CONF_COOKIE, default=self.config_entry.data[CONF_COOKIE]
+                        CONF_COOKIE, default=self._config_entry.data[CONF_COOKIE]
                     ): str,
                 }
             ),
@@ -119,7 +119,7 @@ class AllegroOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def _update_options(self):
         """Update config entry options."""
-        self.options[CONF_USERNAME] = self.config_entry.data[CONF_USERNAME]
+        self.options[CONF_USERNAME] = self._config_entry.data[CONF_USERNAME]
 
         return self.async_create_entry(
             title="Allegro " + self.options[CONF_USERNAME], data=self.options
