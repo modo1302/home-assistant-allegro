@@ -1,4 +1,5 @@
 from typing import Any, Optional
+from datetime import datetime, timedelta
 
 
 class GetOrdersResult:
@@ -29,23 +30,26 @@ class Order:
         self._offers = list(iterator)
         self._order_date = items["orderDate"]
         self._status = Status(items["status"]["primary"]["status"])
-
         delivery = items["delivery"]
-        # waybillsData jest na tym samym poziomie co delivery, nie wewnątrz niego
-        waybills_data = items.get("waybillsData", {})
+        waybills_data = delivery["waybillsData"]
 
-        delivery_date = self._extract_delivery_date(delivery, waybills_data)
+        # Oblicz deadline odbioru: timestamp dostarczenia do paczkomatu + 48h
+        delivery_date = None
+        timestamp = delivery.get("timestamp")
+        if timestamp:
+            dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+            delivery_date = (dt + timedelta(hours=48)).isoformat()
 
         if "waybills" in waybills_data:
             waybill = waybills_data["waybills"][0]
-            if "pickupCode" in waybill:
-                pickup = waybill["pickupCode"]
+            pickup_code = waybill.get("pickupCode")
+            if pickup_code:
                 self._delivery = Delivery(
                     delivery["name"],
                     waybill.get("carrier", {}).get("url"),
-                    pickup.get("code"),
-                    pickup.get("receiverPhoneNumber"),
-                    pickup.get("qrCode"),
+                    pickup_code.get("code"),
+                    pickup_code.get("receiverPhoneNumber"),
+                    pickup_code.get("qrCode"),
                     delivery_date,
                 )
             else:
@@ -59,27 +63,6 @@ class Order:
                 )
         else:
             self._delivery = Delivery(delivery["name"], None, None, None, None, delivery_date)
-
-    def _extract_delivery_date(self, delivery: dict, waybills_data: dict) -> Optional[str]:
-        """Próbuje wyciągnąć datę dostarczenia z różnych pól odpowiedzi API."""
-        # 1. plannedDeliveryDate w waybill
-        if "waybills" in waybills_data:
-            waybill = waybills_data["waybills"][0]
-            planned = waybill.get("plannedDeliveryDate")
-            if planned:
-                return planned
-
-        # 2. delivery.time
-        time_info = delivery.get("time", {})
-        if time_info:
-            date_to = time_info.get("to")
-            if date_to:
-                return date_to
-            date_from = time_info.get("from")
-            if date_from:
-                return date_from
-
-        return None
 
     def get_formatted_address(self, items: dict):
         """Returns formatted delivery address"""
@@ -138,10 +121,10 @@ class Delivery:
     def __init__(
         self,
         name: str,
-        url: str,
-        pickup_code: str,
-        receiver_phone_number: str,
-        qr_code: str,
+        url: Optional[str],
+        pickup_code: Optional[str],
+        receiver_phone_number: Optional[str],
+        qr_code: Optional[str],
         delivery_date: Optional[str] = None,
     ) -> None:
         self._name = name
