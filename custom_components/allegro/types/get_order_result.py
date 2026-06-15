@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 
 class GetOrdersResult:
@@ -32,27 +32,61 @@ class Order:
         delivery = items["delivery"]
         waybills_data = delivery["waybillsData"]
 
-        if "waybills" in waybills_data:
-            if "pickupCode" in waybills_data["waybills"][0]:
-                pickup = waybills_data["waybills"][0]["pickupCode"]
+        # Pobierz datę dostarczenia z różnych możliwych miejsc w odpowiedzi API
+        delivery_date = self._extract_delivery_date(delivery, waybills_data)
 
+        if "waybills" in waybills_data:
+            waybill = waybills_data["waybills"][0]
+            if "pickupCode" in waybill:
+                pickup = waybill["pickupCode"]
                 self._delivery = Delivery(
                     delivery["name"],
-                    waybills_data["waybills"][0]["carrier"]["url"],
+                    waybill["carrier"]["url"],
                     pickup.get("code"),
                     pickup.get("receiverPhoneNumber"),
                     pickup.get("qrCode"),
+                    delivery_date,
                 )
             else:
                 self._delivery = Delivery(
                     delivery["name"],
-                    waybills_data["waybills"][0]["carrier"]["url"],
+                    waybill["carrier"]["url"],
                     None,
                     None,
                     None,
+                    delivery_date,
                 )
         else:
-            self._delivery = Delivery(delivery["name"], None, None, None, None)
+            self._delivery = Delivery(delivery["name"], None, None, None, None, delivery_date)
+
+    def _extract_delivery_date(self, delivery: dict, waybills_data: dict) -> Optional[str]:
+        """
+        Próbuje wyciągnąć datę dostarczenia z różnych pól odpowiedzi API Allegro.
+
+        Allegro może zwracać datę w:
+        - waybills[0].plannedDeliveryDate  (paczkomaty, kurierzy)
+        - delivery.time.to                 (szacowany czas dostarczenia)
+        - delivery.time.from               (szacowany czas dostarczenia - od)
+        """
+        # 1. Szukaj plannedDeliveryDate w waybill (najdokładniejsza data)
+        if "waybills" in waybills_data:
+            waybill = waybills_data["waybills"][0]
+            planned = waybill.get("plannedDeliveryDate")
+            if planned:
+                return planned
+
+        # 2. Szukaj w polu delivery.time (data szacowana przez Allegro)
+        time_info = delivery.get("time", {})
+        if time_info:
+            # Preferuj datę "do" (to), bo to jest obiecana data dostarczenia
+            date_to = time_info.get("to")
+            if date_to:
+                return date_to
+            date_from = time_info.get("from")
+            if date_from:
+                return date_from
+
+        return None
 
     def get_formatted_address(self, items: dict):
         """Returns formatted delivery address"""
@@ -116,6 +150,7 @@ class Delivery:
         pickup_code: str,
         receiver_phone_number: str,
         qr_code: str,
+        delivery_date: Optional[str] = None,
     ) -> None:
         """Init method"""
         self._name = name
@@ -123,6 +158,7 @@ class Delivery:
         self._pickup_code = pickup_code
         self._receiver_phone_number = receiver_phone_number
         self._qr_code = qr_code
+        self._delivery_date = delivery_date
 
     @property
     def get_name(self):
@@ -143,6 +179,10 @@ class Delivery:
     @property
     def get_qr_code(self):
         return self._qr_code
+
+    @property
+    def get_delivery_date(self):
+        return self._delivery_date
 
 
 class Offer:
