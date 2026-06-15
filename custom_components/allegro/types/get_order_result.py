@@ -1,5 +1,6 @@
 from typing import Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import zoneinfo
 
 
 class GetOrdersResult:
@@ -33,12 +34,14 @@ class Order:
         delivery = items["delivery"]
         waybills_data = delivery["waybillsData"]
 
-        # Oblicz deadline odbioru: timestamp dostarczenia do paczkomatu + 48h
+        # Oblicz deadline odbioru: timestamp dostarczenia do paczkomatu + 48h, w strefie Europe/Warsaw
         delivery_date = None
         timestamp = delivery.get("timestamp")
         if timestamp:
+            warsaw = zoneinfo.ZoneInfo("Europe/Warsaw")
             dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-            delivery_date = (dt + timedelta(hours=48)).isoformat()
+            deadline = (dt + timedelta(hours=48)).astimezone(warsaw)
+            delivery_date = deadline.strftime("%Y-%m-%d %H:%M")
 
         if "waybills" in waybills_data:
             waybill = waybills_data["waybills"][0]
