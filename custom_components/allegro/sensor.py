@@ -29,6 +29,23 @@ async def async_setup_entry(hass, entry, async_add_devices):
     )
 
 
+def _build_order_item(item, include_pickup: bool = False) -> dict:
+    """Buduje słownik atrybutów dla jednego zamówienia."""
+    entry = {
+        "Seller": item.get_seller,
+        "Status": item.get_status.get_current_status,
+        "Offers": list(map(lambda i: i.get_title, item.get_offers)),
+        "tracing_url": item.get_delivery.get_url,
+        "delivery_name": item.get_delivery.get_name,
+        "delivery_date": item.get_delivery.get_delivery_date,
+    }
+    if include_pickup:
+        entry["pickup_code"] = item.get_delivery.get_pickup_code
+        entry["receiver_phone_number"] = item.get_delivery.get_receiver_phone_number
+        entry["qr_code"] = item.get_delivery.get_qr_code
+    return entry
+
+
 class WaitingForDeliverySensor(AllegroEntity, SensorEntity):
     """WaitingForDelivery Sensor class."""
 
@@ -60,25 +77,8 @@ class WaitingForDeliverySensor(AllegroEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         orders = self.get_allegro_data.get_not_delivered_orders
-        items = []
-
-        for item in orders:
-            items.append(
-                {
-                    "Seller": item.get_seller,
-                    "Status": item.get_status.get_current_status,
-                    "Offers": list(map(lambda i: i.get_title, item.get_offers)),
-                    "tracing_url": item.get_delivery.get_url,
-                    "delivery_name": item.get_delivery.get_name,
-                    "pickup_code": item.get_delivery.get_pickup_code,
-                    "receiver_phone_number": item.get_delivery.get_receiver_phone_number,
-                    "qr_code": item.get_delivery.get_qr_code,
-                }
-            )
-
-        return {
-            "details": items,
-        }
+        items = [_build_order_item(item, include_pickup=True) for item in orders]
+        return {"details": items}
 
 
 class WaitingForPickupSensor(AllegroEntity, SensorEntity):
@@ -108,25 +108,8 @@ class WaitingForPickupSensor(AllegroEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         orders = self.get_allegro_data.get_waiting_for_pickup
-        items = []
-
-        for item in orders:
-            items.append(
-                {
-                    "Seller": item.get_seller,
-                    "Status": item.get_status.get_current_status,
-                    "Offers": list(map(lambda i: i.get_title, item.get_offers)),
-                    "tracing_url": item.get_delivery.get_url,
-                    "delivery_name": item.get_delivery.get_name,
-                    "pickup_code": item.get_delivery.get_pickup_code,
-                    "receiver_phone_number": item.get_delivery.get_receiver_phone_number,
-                    "qr_code": item.get_delivery.get_qr_code,
-                }
-            )
-
-        return {
-            "details": items,
-        }
+        items = [_build_order_item(item, include_pickup=True) for item in orders]
+        return {"details": items}
 
 
 class InTransitSensor(AllegroEntity, SensorEntity):
@@ -156,22 +139,8 @@ class InTransitSensor(AllegroEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         orders = self.get_allegro_data.get_in_transit
-        items = []
-
-        for item in orders:
-            items.append(
-                {
-                    "Seller": item.get_seller,
-                    "Status": item.get_status.get_current_status,
-                    "Offers": list(map(lambda i: i.get_title, item.get_offers)),
-                    "tracing_url": item.get_delivery.get_url,
-                    "delivery_name": item.get_delivery.get_name,
-                }
-            )
-
-        return {
-            "details": items,
-        }
+        items = [_build_order_item(item) for item in orders]
+        return {"details": items}
 
 
 class InDeliverySensor(AllegroEntity, SensorEntity):
@@ -201,19 +170,5 @@ class InDeliverySensor(AllegroEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         orders = self.get_allegro_data.get_in_delivery
-        items = []
-
-        for item in orders:
-            items.append(
-                {
-                    "Seller": item.get_seller,
-                    "Status": item.get_status.get_current_status,
-                    "Offers": list(map(lambda i: i.get_title, item.get_offers)),
-                    "tracing_url": item.get_delivery.get_url,
-                    "delivery_name": item.get_delivery.get_name,
-                }
-            )
-
-        return {
-            "details": items,
-        }
+        items = [_build_order_item(item) for item in orders]
+        return {"details": items}
