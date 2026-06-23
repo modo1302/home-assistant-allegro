@@ -9,6 +9,8 @@ from .api import AllegroApiClient
 from .const import (
     CONF_COOKIE,
     CONF_USERNAME,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PLATFORMS,
 )
@@ -50,6 +52,7 @@ class AllegroFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # Provide defaults for form
         user_input[CONF_COOKIE] = ""
         user_input[CONF_USERNAME] = ""
+        user_input[CONF_SCAN_INTERVAL] = DEFAULT_SCAN_INTERVAL
 
         return await self._show_config_form(user_input)
 
@@ -66,6 +69,10 @@ class AllegroFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_COOKIE, default=user_input[CONF_COOKIE]): str,
                     vol.Optional(CONF_USERNAME, default=user_input[CONF_USERNAME]): str,
+                    vol.Optional(
+                        CONF_SCAN_INTERVAL,
+                        default=user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1)),
                 }
             ),
             errors=self._errors,
@@ -106,6 +113,10 @@ class AllegroOptionsFlowHandler(config_entries.OptionsFlow):
             self.options.update(user_input)
             return await self._update_options()
 
+        current_interval = self._config_entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+        )
+
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
@@ -113,6 +124,9 @@ class AllegroOptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Required(
                         CONF_COOKIE, default=self._config_entry.data[CONF_COOKIE]
                     ): str,
+                    vol.Optional(
+                        CONF_SCAN_INTERVAL, default=current_interval
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1)),
                 }
             ),
         )
