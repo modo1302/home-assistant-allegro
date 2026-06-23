@@ -20,12 +20,12 @@ from .api import AllegroApiClient
 
 from .const import (
     CONF_COOKIE,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PLATFORMS,
     STARTUP_MESSAGE,
 )
-
-SCAN_INTERVAL = timedelta(minutes=30)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -43,10 +43,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     cookie = entry.data.get(CONF_COOKIE)
 
+    # Interwał odświeżania pobierany z opcji integracji (w minutach), z fallbackiem na domyślną wartość
+    scan_interval_minutes = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+
     session = async_get_clientsession(hass)
     client = AllegroApiClient(cookie, session)
 
-    coordinator = AllegroDataUpdateCoordinator(hass, client=client)
+    coordinator = AllegroDataUpdateCoordinator(
+        hass, client=client, scan_interval_minutes=scan_interval_minutes
+    )
     await coordinator.async_refresh()
 
     if not coordinator.last_update_success:
@@ -65,12 +70,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 class AllegroDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
-    def __init__(self, hass: HomeAssistant, client: AllegroApiClient) -> None:
+    def __init__(
+        self, hass: HomeAssistant, client: AllegroApiClient, scan_interval_minutes: int
+    ) -> None:
         """Initialize."""
         self.api = client
         self.platforms = []
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=timedelta(minutes=scan_interval_minutes),
+        )
 
     async def _async_update_data(self):
         """Update data via library."""
