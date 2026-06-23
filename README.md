@@ -1,3 +1,9 @@
+All credit goes to the brilliant @Przemko92, this is a for of his code and I'm simply vibe-coding here! ;)
+Added features:
+* delivery date
+* ability to change refresh interval
+
+
 # Home assistant Allegro integration
 
 [![GitHub Release][releases-shield]][releases]
