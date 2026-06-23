@@ -1,6 +1,6 @@
 All credit goes to the brilliant [Przemko92](https://github.com/Przemko92), this is a fork of his code and I'm simply vibe-coding here! ;)
 Added features:
-* delivery date
+* package delivery date
 * ability to change refresh interval
 
 
