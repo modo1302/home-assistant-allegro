@@ -21,11 +21,13 @@ PLATFORMS = [SENSOR]
 # Configuration and options
 CONF_COOKIE = "QXLSESSID"
 CONF_USERNAME = "user_name"
+CONF_SCAN_INTERVAL = "scan_interval"
 
 ALLEGRO_API_URL = "https://api.allegro.pl"
 
 # Defaults
 DEFAULT_NAME = DOMAIN
+DEFAULT_SCAN_INTERVAL = 30  # minuty
 
 
 STARTUP_MESSAGE = f"""
