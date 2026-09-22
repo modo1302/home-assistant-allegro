@@ -1,6 +1,7 @@
 All credit goes to the brilliant [Przemko92](https://github.com/Przemko92), this is a fork of his code and I'm simply vibe-coding here! ;)
 Added features:
 * package delivery date
+* estimated delivery date/time per shipment (`estimated_delivery` attribute)
 * ability to change refresh interval
 
 
