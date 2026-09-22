@@ -31,6 +31,7 @@ class Order:
         self._offers = list(iterator)
         self._order_date = items["orderDate"]
         self._status = Status(items["status"]["primary"]["status"])
+        self._delivery_hint = items["status"]["primary"].get("hint")
         delivery = items["delivery"]
         waybills_data = delivery["waybillsData"]
 
@@ -101,6 +102,10 @@ class Order:
     @property
     def get_status(self):
         return self._status
+
+    @property
+    def get_delivery_hint(self):
+        return self._delivery_hint
 
     @property
     def get_delivery(self):
