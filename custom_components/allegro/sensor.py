@@ -38,6 +38,7 @@ def _build_order_item(item, include_pickup: bool = False) -> dict:
         "tracing_url": item.get_delivery.get_url,
         "delivery_name": item.get_delivery.get_name,
         "delivery_date": item.get_delivery.get_delivery_date,
+        "estimated_delivery": item.get_delivery_hint,
     }
     if include_pickup:
         entry["pickup_code"] = item.get_delivery.get_pickup_code
