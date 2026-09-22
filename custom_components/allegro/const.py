@@ -5,7 +5,7 @@ DOMAIN = "allegro"
 DOMAIN_DATA = f"{DOMAIN}_data"
 VERSION = "0.0.8"
 ATTRIBUTION = "Data provided by http://api.allegro.pl"
-ISSUE_URL = "https://github.com/Przemko92/home-assistant-allegro"
+ISSUE_URL = "https://github.com/modo1302/home-assistant-allegro"
 
 # Icons
 ICON_WAITING = "mdi:package-variant"

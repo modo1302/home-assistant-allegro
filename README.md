@@ -51,16 +51,16 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-[home_assistant_allegro]: https://github.com/Przemko92/home-assistant-allegro
+[home_assistant_allegro]: https://github.com/modo1302/home-assistant-allegro
 
 [buymecoffee]: https://www.buymeacoffee.com/przemko92
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 
-[maintainer]: https://github.com/Przemko92
-[maintainer-shield]: https://img.shields.io/badge/maintainer-%40Przemko92-blue.svg?style=for-the-badge
+[maintainer]: https://github.com/modo1302
+[maintainer-shield]: https://img.shields.io/badge/maintainer-%40modo1302-blue.svg?style=for-the-badge
 
-[commits]: https://github.com/Przemko92/home-assistant-allegro/commits/main
-[commits-shield]: https://img.shields.io/github/commit-activity/y/Przemko92/home-assistant-allegro.svg?style=for-the-badge
+[commits]: https://github.com/modo1302/home-assistant-allegro/commits/main
+[commits-shield]: https://img.shields.io/github/commit-activity/y/modo1302/home-assistant-allegro.svg?style=for-the-badge
 
 [hacs]: https://github.com/custom-components/hacs
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
@@ -68,7 +68,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 [forum]: https://community.home-assistant.io/
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 
-[releases]: https://github.com/Przemko92/home-assistant-allegro/releases
-[releases-shield]: https://img.shields.io/github/release/Przemko92/home-assistant-allegro.svg?style=for-the-badge
+[releases]: https://github.com/modo1302/home-assistant-allegro/releases
+[releases-shield]: https://img.shields.io/github/release/modo1302/home-assistant-allegro.svg?style=for-the-badge
 
-[license-shield]: https://img.shields.io/github/license/Przemko92/home-assistant-allegro.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/modo1302/home-assistant-allegro.svg?style=for-the-badge

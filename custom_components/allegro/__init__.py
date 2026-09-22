@@ -2,7 +2,7 @@
 Custom integration to integrate Allegro with Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/Przemko92/home-assistant-allegro
+https://github.com/modo1302/home-assistant-allegro
 """
 import asyncio
 from datetime import timedelta
