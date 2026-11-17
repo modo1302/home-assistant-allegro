@@ -41,7 +41,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
 
-    cookie = entry.data.get(CONF_COOKIE)
+    # Cookie zmieniony przez "Konfiguruj" trafia do entry.options - ma pierwszeństwo
+    # przed cookie z formularza dodawania (entry.data). Wcześniej był ignorowany.
+    cookie = entry.options.get(CONF_COOKIE) or entry.data.get(CONF_COOKIE)
 
     # Interwał odświeżania pobierany z opcji integracji (w minutach), z fallbackiem na domyślną wartość
     # Kolejność: opcje (Konfiguruj) -> dane wpisu (formularz dodawania) -> domyślna wartość.
