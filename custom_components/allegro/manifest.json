@@ -4,7 +4,7 @@
   "documentation": "https://github.com/modo1302/home-assistant-allegro",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/modo1302/home-assistant-allegro/issues",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "config_flow": true,
   "codeowners": [
     "@modo1302"

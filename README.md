@@ -2,7 +2,7 @@ All credit goes to the brilliant [Przemko92](https://github.com/Przemko92), this
 Added features:
 * package delivery date
 * estimated delivery date/time per shipment (`estimated_delivery` attribute)
-* ability to change refresh interval
+* ability to change refresh interval (default 30 min; set in the setup form or later via "Configure" - `scan_interval`, in minutes, minimum 1)
 
 
 # Home assistant Allegro integration
@@ -44,6 +44,7 @@ Parameter | Description
 -- | --
 `QXLSESSID` | Value of QXLSESSID cookie (required)
 `user_name` | Optional value for multiple instances
+`scan_interval` | Refresh interval in minutes (default 30, minimum 1)
 
 ## Contributions are welcome!
 

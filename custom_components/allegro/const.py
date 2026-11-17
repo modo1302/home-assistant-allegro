@@ -3,7 +3,7 @@
 NAME = "Allegro buyer"
 DOMAIN = "allegro"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.0.8"
+VERSION = "0.0.10"
 ATTRIBUTION = "Data provided by http://api.allegro.pl"
 ISSUE_URL = "https://github.com/modo1302/home-assistant-allegro"
 

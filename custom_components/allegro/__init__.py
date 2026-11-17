@@ -44,7 +44,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     cookie = entry.data.get(CONF_COOKIE)
 
     # Interwał odświeżania pobierany z opcji integracji (w minutach), z fallbackiem na domyślną wartość
-    scan_interval_minutes = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    # Kolejność: opcje (Konfiguruj) -> dane wpisu (formularz dodawania) -> domyślna wartość.
+    # Wcześniej wartość wpisana przy dodawaniu integracji lądowała w entry.data i była
+    # ignorowana, przez co interwał wracał do domyślnych 30 minut.
+    scan_interval_minutes = entry.options.get(
+        CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
 
     session = async_get_clientsession(hass)
     client = AllegroApiClient(cookie, session)
